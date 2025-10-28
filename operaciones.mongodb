@@ -91,9 +91,30 @@ db.productos.insertMany([
   }
 ]);
 
+// Consulta 1: Mostrar todos los productos en la colección
+db.productos.find();
 
+// Consulta 2: Mostrar solo los productos que sean de tipo "Laptop"
+db.productos.find({ tipo_producto: "Laptop" });
 
+// Consulta 3: Mostrar los productos que tengan más de 10 unidades en stock Y un precio menor a 1000
+db.productos.find({ 
+  stock: { $gt: 10 }, 
+  precio: { $lt: 1000 } 
+});
 
+// Consulta 4: Mostrar solo el nombre, precio y stock de los "Smartphone" (Proyección)
+db.productos.find(
+{ tipo_producto: "Smartphone" },
+{ nombre: 1, precio: 1, stock: 1, _id: 0 }
+);
+
+// Operación 1: Se vendió un Smartphone (busque uno por su sku). Reduzca su stock en 1 unidad. (Use $inc)
+
+db.productos.updateOne(
+{ sku: "PHONE-SAMSUNG-S23U-001" },
+{ $inc: { stock: -1 } }
+);
 
 // Operación 2: El precio de la Laptop ha subido. Actualice su precio y añada el campo ultima_revision
 db.productos.updateOne(
