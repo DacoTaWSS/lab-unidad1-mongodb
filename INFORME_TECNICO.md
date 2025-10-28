@@ -20,6 +20,13 @@
 
 
 ---
+
+####  2. 	Diagrama del modelo relacional.
+
+![Modelo entidad relacion](Diagrama_Entidad_Relacion.png)
+
+---
+
 1. Diseño del Modelo NoSQL (MongoDB)
 
 
