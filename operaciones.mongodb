@@ -1,0 +1,107 @@
+
+// Fase 1 
+use("techstore");
+
+db.productos.drop();
+
+// Inserción de Datos (Create)
+
+use("espe");
+db.productos.drop();
+
+db.productos.insertMany([
+  {
+    nombre: "Dell XPS 15",
+    sku: "LAPTOP-DELL-XPS15-001",
+    precio: 1500.00,
+    stock: 15,
+    tipo_producto: "Laptop",
+    marca: "Asus",
+    fecha_llegada: "2024-10-15T10:30:00Z",
+    especificaciones: {
+      cpu: "Intel Core i7-12700H",
+      ram: 16,
+      almacenamiento: "1TB SSD",
+      tarjeta_grafica: "NVIDIA RTX 3050 4GB",
+      pantalla: "15.6\" FHD (1920x1080)",
+      sistema_operativo: "Windows 7",
+      bateria: "86 WHr",
+      puertos: ["2x USB-C Thunderbolt 4", "1x USB-A 3.2", "HDMI 2.1", "Audio Jack"],
+      dimensiones: {
+        alto_cm: 1.8,
+        ancho_cm: 34.4,
+        profundidad_cm: 23.0,
+        peso_kg: 1.86
+      }
+    },
+    garantia_meses: 10
+  },
+  {
+
+    nombre: "Samsung Galaxy S23 Ultra",
+    sku: "PHONE-SAMSUNG-S23U-001",
+    precio: 1199.00,
+    stock: 25,
+    marca: "Samsung",
+    tipo_producto: "Smartphone",
+    especificaciones: {
+      pantalla: {
+        tamaño: "6.8\"",
+        tipo: "Dynamic AMOLED 2X",
+        resolucion: "3088 x 1440 (QHD+)"
+      },
+      procesador: {
+        modelo: "Snapdragon 8 Gen 2 for Galaxy",
+        nucleos: 8
+      },
+      ram_gb: 12,
+      almacenamiento: {
+        capacidad: "512GB"
+      },
+      bateria: {
+        capacidad_mah: 5000,
+        carga_rapida: "45W"
+      },
+      sistema_operativo: {
+        nombre: "Android 13"
+      }
+    },
+    colores_disponibles: ["Phantom Black", "Cream"],
+    etiquetas: ["flagship", "5g", "camara-profesional"],
+    fecha_lanzamiento: "2023-02-17T00:00:00Z"
+  },
+  {
+    nombre: "LG UltraGear 27GN950",
+    sku: "MONITOR-LG-27GN950-001",
+    precio: 699.00,
+    stock: 20,
+    Categoria: "Monitor",
+    marca: "LG",
+    fecha_llegada: "2024-10-10T09:00:00Z",
+    especificaciones: {
+      tamaño: "27\" UHD 4K",
+      tipo_panel: "Nano IPS",
+      tasa_refresco: "144Hz",
+      tiempo_respuesta_ms: 1,
+      resolucion: "3840x2160",
+      conectividad: ["HDMI 2.1", "DisplayPort 1.4", "USB 3.0"],
+      soporte_ajustable: true
+    },
+    garantia_meses: 12
+  }
+]);
+
+
+
+
+
+// Operación 2: El precio de la Laptop ha subido. Actualice su precio y añada el campo ultima_revision
+db.productos.updateOne(
+  { sku: "LAPTOP-DELL-XPS15-001" },
+  {
+    $set: {
+      precio: 1600.00,
+      ultima_revision: new Date()
+    }
+  }
+);
