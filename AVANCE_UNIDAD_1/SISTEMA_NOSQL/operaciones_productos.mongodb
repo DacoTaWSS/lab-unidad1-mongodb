@@ -159,7 +159,7 @@ db.productos.find(
 // Operación 1: Se vendió un Smartphone (busque uno por su sku). Reduzca su stock en 1 unidad. (Use $inc)
 
 db.productos.updateOne(
-{ sku: "2" },
+{ sku: 2 },
 { $inc: { stock: -1 } }
 );
 
