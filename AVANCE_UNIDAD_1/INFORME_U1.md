@@ -71,23 +71,31 @@ La elección de SQL para el manejo de productos fue tomada por:
 * SQL (Detalle_Ventas): Almacena sku_producto como referencia
 NoSQL (productos): Almacena el documento completo del producto con su sku
 
+Se deb tener en cuenta el proceso ETL, el cual es un proceso que va a permitir la transferencia de datos desde distintas fuentes de almacenamiento. Siendo importante para consolidad datos dando garantía integridad y coherencia a la información. Consta de 3 etapas: 
+
+* Extracción: Etapa que obtiene los datos de difernetes fuentes, en este caso SQL y NOSQL. Su objetivo es capturar la inromación sin alterarla. 
+* Transformación: Etapa donde se limpian, depura, unifica y adapta los datos para que tengan un formato coherente y utilizable.
+* Carga: Etapa donde se insertan los datos en el sistema final, haciendolos disponibles para consultas, reportes o análisis. 
+ 
 ##### Problemas potenciales de calidad de datos en los sistemas de origen
 
 **1. Inconsistencia en la integridad referencial**
 
-Uno de los problemas que se puede presentar es un problema de integridad, donde Detalle_Ventas.sku_producto (SQL) podría almacenarse un SKU que no existe en la colección productos, esto puede tener varias causas como:
+Uno de los problemas que se puede presentar es un problema de integridad, en Detalle_Ventas.sku_producto (SQL), donde se podría almacenar un SKU que no existe en la colección de productos, esto puede tener varias causas:
    
-   * Productos eliminado en MongoDB
+   * En el proceso de extracción si un sku en SQL no existe en MongoDB, se extraerán datos incompletos.
    * Ingreso erróneo de SKU 
 
-Esto puede hacer que haya errores como reportes incompletos o erróneos, no poder obtener detalles del producto, entre otros. 
+
+Esto puede hacer que haya errores como reportes incompletos o erróneos, no poder obtener detalles del producto, errores de correspondencia. 
 
 Una forma de evitarlo es añadir validaciones o funciones que verifique que el producto exista en MongoDB antes de insertarlo en SQL. 
 
 **2. Mismo SKU para distintos productos en MongoDB**
 
-Si no se aplica una validación correcta a nivel de mongo db, dos o más productos podrían tener un mismo SKU, lo que causaría que: 
+Si no se aplica una validación correcta a nivel de mongo db, dos o más productos podrían tener un mismo SKU , lo que causaría que: 
 
+   * En el proceso de extracción si existen duplicados de sku en MongoDB, no se sabrá cuál producto asociar.
    * No se sabría cuál de los 2 productos se vendió
    * Inventario descuadrado
    * Consultas finOne() impredecibles, ya que lanzaría cualquiera de los dos productos.  
@@ -96,14 +104,16 @@ Esto se puede arreglar, creando un índice único en el campo sku haciendo que M
 
 **3. Inconsistencia y Falta de Estandarización en Datos de Texto**
 
-Otro problema puede ser la falta de normalización y validación consistente. En el caso de SQL se podrían insertar datos incorrectos como por ejemplo un formato de a-mail invalido, múltiples ingresos de una misma ciudad con formato distintos como “Quito", "quito", "QUITO", "Kito". Nombres con espacios extras, números, caracteres especiales, etc. O incluso números con formatos variados. Mientras que en NoSQL también se podrían tener mismas Marcas, modelos iguales pero con distintos formatos. 
+Durante la etapa de transformación, otro problema puede ser la falta de normalización y validación consistente. En el caso de SQL se podrían insertar datos incorrectos como por ejemplo un formato de a-mail invalido, múltiples ingresos de una misma ciudad con formato distintos como “Quito", "quito", "QUITO", "Kito". Nombres con espacios extras, números, caracteres especiales, etc. O incluso números con formatos variados. Mientras que en NoSQL también se podrían tener mismas Marcas, modelos iguales pero con distintos formatos. 
 
 Esto se debe a: 
 
  * Validación insuficiente en la capa de aplicación
+ * En la etapa de transformación los formatos inconsistentes o invalidos se dificulta la unión y agreagación. 
  * Formularios sin validación frontend/backend
  * Entrada manual de datos sin restricciones
  * Falta de catálogos o listas desplegables para campos repetitivos
+ * Si durante la carga se insertan registros sin validar, se pierde integridad referencial
 
 Esto se puede arreglar añadiendo funciones de normalización de texto como poner todo en mayúscula o minúscula, validaciones o constraint para emails, en mongo db el uso de JSON Schema Validator. 
 
