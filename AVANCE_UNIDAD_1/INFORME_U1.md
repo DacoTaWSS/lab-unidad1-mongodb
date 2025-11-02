@@ -25,24 +25,39 @@ En el presente proyecto techstore_sales, se utilizó MySQL (Base de datos relaci
   
 * Otra cosa que lo caracteriza, es que la estructura de una venta es siempre la misma es decir que es predecible y estable. En este caso, siempre se van a ingresar los mismos datos: cliente, sucursal, fecha, productos. Es decir que estos no cambian de forma frecuente. Al ser de esquema rígido se previenen errores y se mantiene la consistencia. 
 
-* Además las bases de datos relacionales son más usadas como base de datos transaccionales, ya que son usadas para registrar transacciones, garantizar la integridad de los datos y aplicar el modelo ACID (Atomicidad, Consistencia, Aislamiento y Durabilidad), lo que los hace perfecto para sistemas que requieren exactitud como el sistema de ventas de TechStore. 
+* Además las bases de datos relacionales son más usadas como base de datos transaccionales, ya que son usadas para registrar transacciones, garantizar la integridad de los datos y aplicar el modelo ACID:             
+    - Atomicidad: Si la venta no se ejecuta de forma completa no se ejecuta, lo que evita registros parciales. 
+    - Consistencia:  Las llaves foráneas aseguran que los datos esten relacionados entre sí cumpliendo con las restricciones del modelo y las reglas de integrodad.
+    - Aislamiento: Puedan ocurrir múltiples ventas al mismo tiempo, sin que afecten el resultado entre sí. 
+    - Durabilidad: Datos que se guarden de forma permanentes y que se han resistente ante fallos del sistema. 
 
+Lo que los hace perfecto para sistemas que requieren exactitud como el sistema de ventas de TechStore. 
 
+* Las bases de datos SQL tambien priorizan la Consistencia y la Disponibilidad (CA), garantizando los resultados precisos y confiables en cada transacción, ideal para un sistema de ventas, donde los errores o datos duplicados no pueden permitirse. 
 ##### Uso de NoSQL para manejar Productos
 
 Las bases de datos NoSQL, poseen un esquema mucho más flexible, se caracterizan por trabajar con datos no estructurados o semi estructurado. NoSQL almacenan datos que pueden tener diferentes estructuras de datos que pueden estar dentro de la misma colección. 
 
 Existen distintos tipos de bases de datos NoSQL como de documentos, las cuales almacenan objetos tipo JSON. Cada documento es parecido a un registro y puede tener valores que incluyen números, matrices, objetos, cadenas o incluso caracteres booleanos. Pueden tener pares clave-valor, documentos anidados u otros datos estructurados. 
 
+
+
 ---
 
-Para el proyecto techstore_inventory, se utilizó MongoDB la cual es una Base de Datos NoSQL Documental. Esta elección fue tomada por: 
+Para el proyecto techstore_inventory, se utilizó MongoDB la cual es una Base de Datos NoSQL Documental que se rige por el modelo BASE, el cual prioriza la disponibilidad y la escabilidad frente a la consistencia inmediata, ya que el sistema puede responder aunque una paste del cluster este fallando, los datos pueden estar en transacciones incluso si se estuvieran actualizando, además que se pueden ver los datos actualizados con el tiempo, es decir que todos los nodos se sincronizan y terminan mostrando el mismo valor.
+
+Mongo DB se clasifica como una base AP en la perspectiva del teormea CAP, ya que puede sacrificar la consistencia estricta a cambio de rendimiento y flexibilidad.
+
+
+La elección de SQL para el manejo de productos fue tomada por: 
 
 * Cada uno de los productos, poseía especificaciones y características distintas, al tener productos como laptops, monitores o Smartphones que cuentan con atributos diferentes en una base de datos SQL se debe buscar opciones distintas como por ejemplo crear una tabla para cada uno, mientras que en una base de datos NoSQL se pueden almacenar todos en una misma colección a pesar de cada documento tenga valores distintos. Es decir que no se tiene una estructura rígida predefinida para todos los productos y permite almacenar documentos con estructuras variadas.
   
 * Un catálogo de productos se suele consultar de forma frecuente, por lo que al no tener varias tablas el tiempo de consulta es mucho más rápido. 
   
 * Si se quiere añadir nuevas categorías algún producto no requiere modificar el esquema ni requiere ALTER TABLE como se haría en SQL, por lo que es más flexible en cambios. 
+
+
 
 
 ---
